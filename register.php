@@ -3,6 +3,10 @@ require(__DIR__ . "/partials/nav.php");
 ?>
 <form onsubmit="return validate(this)" method="POST">
     <div>
+        <label for="username">Username</label>
+        <input type="text" name="username" required minlength="3" />
+    </div>
+    <div>
         <label for="email">Email</label>
         <input type="email" name="email" required />
     </div>
@@ -18,9 +22,20 @@ require(__DIR__ . "/partials/nav.php");
 </form>
 <script>
     function validate(form) {
+        const username = form.username.value.trim();
         const email = form.email.value.trim();
         const password = form.password.value.trim();
         const confirm = form.confirm.value.trim();
+
+        // Username validation
+        if (!username) {
+            alert("Username must not be empty");
+            return false;
+        }
+        if (username.length < 3) {
+            alert("Username must be at least 3 characters long");
+            return false;
+        }
 
         // Email validation
         if (!email) {
@@ -57,15 +72,24 @@ require(__DIR__ . "/partials/nav.php");
     }
 </script>
 <?php
-require_once(__DIR__ . "/common/db.php"); // Include database connection
-require_once(__DIR__ . "/common/util.php"); // Include utility functions
+require_once(__DIR__ . "/lib/db.php"); // Include database connection
 
-if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"])) {
+if (isset($_POST["username"]) && isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"])) {
+    $username = se($_POST, "username", "", false);
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
     $confirm = se($_POST, "confirm", "", false);
 
     $hasError = false;
+
+    // Validate username
+    if (empty($username)) {
+        echo "Username must not be empty<br>";
+        $hasError = true;
+    } elseif (strlen($username) < 3) {
+        echo "Username must be at least 3 characters<br>";
+        $hasError = true;
+    }
 
     // Validate email
     if (empty($email)) {
@@ -103,14 +127,14 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
 
         // Insert into database
         $db = getDB();
-        $stmt = $db->prepare("INSERT INTO Users (email, password) VALUES(:email, :password)");
+        $stmt = $db->prepare("INSERT INTO Users (username, email, password) VALUES(:username, :email, :password)");
 
         try {
-            $stmt->execute([":email" => $email, ":password" => $hash]);
+            $stmt->execute([":username" => $username, ":email" => $email, ":password" => $hash]);
             echo "Successfully registered!<br>";
         } catch (Exception $e) {
-            if ($e->getCode() == 23000) { // Duplicate entry (email already exists)
-                echo "Email already registered<br>";
+            if ($e->getCode() == 23000) { // Duplicate entry (username or email already exists)
+                echo "Username or Email already registered<br>";
             } else {
                 echo "There was a problem registering<br>";
                 echo "<pre>" . var_export($e, true) . "</pre>";
