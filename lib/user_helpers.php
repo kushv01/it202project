@@ -7,12 +7,18 @@ if (!function_exists('is_logged_in')) {
 
 if (!function_exists('has_role')) {
     function has_role($role) {
-        if (is_logged_in() && isset($_SESSION["user"]["roles"])) {
-            foreach ($_SESSION["user"]["roles"] as $r) {
-                if ($r["name"] === $role) {
-                    return true;
-                }
-            }
+        global $db;
+        $user_id = get_user_id(); // Fetch the logged-in user's ID
+    
+        if ($user_id) {
+            $stmt = $db->prepare("
+                SELECT COUNT(*) 
+                FROM UserRoles ur 
+                JOIN Roles r ON ur.role_id = r.id 
+                WHERE ur.user_id = :user_id AND r.name = :role_name AND ur.is_active = 1
+            ");
+            $stmt->execute(['user_id' => $user_id, 'role_name' => $role]);
+            return $stmt->fetchColumn() > 0;
         }
         return false;
     }
