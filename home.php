@@ -38,7 +38,7 @@ $user = $stmt->fetch();
 
 <h1>Welcome, <?php echo htmlspecialchars($user['username']); ?>!</h1>
 
-<h2>Update Your Profileee</h2>
+<h2>Update Your Profile</h2>
 
 <?php if (!empty($success_message)) : ?>
     <p style="color: green;"><?php echo htmlspecialchars($success_message); ?></p>
