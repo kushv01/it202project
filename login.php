@@ -3,8 +3,8 @@ require(__DIR__ . "/partials/nav.php");
 ?>
 <form onsubmit="return validate(this)" method="POST">
     <div>
-        <label for="email">Email</label>
-        <input type="email" name="email" required />
+        <label for="identifier">Email or Username</label>
+        <input type="text" name="identifier" required />
     </div>
     <div>
         <label for="pw">Password</label>
@@ -14,55 +14,41 @@ require(__DIR__ . "/partials/nav.php");
 </form>
 <script>
     function validate(form) {
-        // Ensure form validation logic checks for proper email and password format
-        const email = form.email.value.trim();
-        const password = form.password.value;
+        const identifier = form.identifier.value.trim();
+        const password = form.password.value.trim();
 
-        if (!email) {
-            alert("Email is required");
+        // Identifier (Email/Username) validation
+        if (!identifier) {
+            alert("Email or Username is required");
             return false;
         }
 
-        // Basic email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert("Please enter a valid email address");
-            return false;
-        }
-
+        // Password validation
         if (!password) {
             alert("Password is required");
             return false;
         }
-
         if (password.length < 8) {
             alert("Password must be at least 8 characters");
             return false;
         }
 
-        return true;
+        return true; // All validations passed
     }
 </script>
 <?php
-require_once(__DIR__ . "/common/db.php"); // Include database connection
-require_once(__DIR__ . "/common/util.php"); // Include utility functions
+require_once(__DIR__ . "/lib/db.php"); // Include database connection
 
-if (isset($_POST["email"]) && isset($_POST["password"])) {
-    $email = se($_POST, "email", "", false);
+if (isset($_POST["identifier"]) && isset($_POST["password"])) {
+    $identifier = se($_POST, "identifier", "", false);
     $password = se($_POST, "password", "", false);
 
     $hasError = false;
 
-    // Sanitize and validate email
-    if (empty($email)) {
-        echo "Email must not be empty<br>";
+    // Validate identifier (email or username)
+    if (empty($identifier)) {
+        echo "Email or Username must not be empty<br>";
         $hasError = true;
-    } else {
-        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            echo "Invalid email address<br>";
-            $hasError = true;
-        }
     }
 
     // Validate password
@@ -77,9 +63,13 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     if (!$hasError) {
         // Database connection
         $db = getDB();
-        $stmt = $db->prepare("SELECT id, email, password FROM Users WHERE email = :email");
+        $stmt = $db->prepare("
+            SELECT id, username, email, password 
+            FROM Users 
+            WHERE email = :identifier OR username = :identifier
+        ");
         try {
-            $r = $stmt->execute([":email" => $email]);
+            $r = $stmt->execute([":identifier" => $identifier]);
             if ($r) {
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($user) {
@@ -88,16 +78,17 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                         session_start();
                         $_SESSION["user"] = [
                             "id" => $user["id"],
+                            "username" => $user["username"],
                             "email" => $user["email"]
                         ];
-                        echo "Welcome " . htmlspecialchars($email) . "<br>";
+                        echo "Welcome " . htmlspecialchars($user["username"] ?? $user["email"]) . "<br>";
                         header("Location: home.php");
                         exit;
                     } else {
                         echo "Invalid password<br>";
                     }
                 } else {
-                    echo "Email not found<br>";
+                    echo "No account found with that email or username<br>";
                 }
             }
         } catch (Exception $e) {

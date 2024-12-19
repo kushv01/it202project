@@ -1,66 +1,56 @@
 <?php
-// Safely extract values from an array and sanitize output
-if (!function_exists('se')) {
-    function se($array, $key, $default = "", $sanitize = true) {
-        if (isset($array[$key])) {
-            return $sanitize ? htmlspecialchars($array[$key]) : $array[$key];
-        }
-        return $default;
-    }
-}
-
-// Check if user is logged in
 if (!function_exists('is_logged_in')) {
     function is_logged_in() {
-        return isset($_SESSION["user"]);
+        return isset($_SESSION["user"]); //se($_SESSION, "user", false, false);
     }
 }
 
-// Check if the user has a specific role
 if (!function_exists('has_role')) {
     function has_role($role) {
-        if (is_logged_in() && isset($_SESSION["user"]["roles"])) {
-            foreach ($_SESSION["user"]["roles"] as $r) {
-                if ($r["name"] === $role) {
-                    return true;
-                }
-            }
+        global $db;
+        $user_id = get_user_id(); // Fetch the logged-in user's ID
+    
+        if ($user_id) {
+            $stmt = $db->prepare("
+                SELECT COUNT(*) 
+                FROM UserRoles ur 
+                JOIN Roles r ON ur.role_id = r.id 
+                WHERE ur.user_id = :user_id AND r.name = :role_name AND ur.is_active = 1
+            ");
+            $stmt->execute(['user_id' => $user_id, 'role_name' => $role]);
+            return $stmt->fetchColumn() > 0;
         }
         return false;
     }
 }
 
-// Get the logged-in user's username
 if (!function_exists('get_username')) {
     function get_username() {
-        if (is_logged_in()) {
+        if (is_logged_in()) { //we need to check for login first because "user" key may not exist
             return se($_SESSION["user"], "username", "", false);
         }
         return "";
     }
 }
 
-// Get the logged-in user's email
 if (!function_exists('get_user_email')) {
     function get_user_email() {
-        if (is_logged_in()) {
+        if (is_logged_in()) { //we need to check for login first because "user" key may not exist
             return se($_SESSION["user"], "email", "", false);
         }
         return "";
     }
 }
 
-// Get the logged-in user's ID
 if (!function_exists('get_user_id')) {
     function get_user_id() {
-        if (is_logged_in()) {
+        if (is_logged_in()) { //we need to check for login first because "user" key may not exist
             return se($_SESSION["user"], "id", false, false);
         }
         return false;
     }
 }
 
-// Check if a username is available
 if (!function_exists('is_username_available')) {
     function is_username_available($username) {
         global $db;
@@ -70,7 +60,6 @@ if (!function_exists('is_username_available')) {
     }
 }
 
-// Check if an email is available
 if (!function_exists('is_email_available')) {
     function is_email_available($email) {
         global $db;
@@ -80,11 +69,10 @@ if (!function_exists('is_email_available')) {
     }
 }
 
-// Update a user field
 if (!function_exists('update_user_field')) {
     function update_user_field($user_id, $field, $value) {
         global $db;
-        $valid_fields = ['username', 'email', 'password']; // Valid fields
+        $valid_fields = ['username', 'email', 'password']; // Specify valid fields to update
         if (!in_array($field, $valid_fields)) {
             throw new Exception("Invalid field specified");
         }
@@ -94,7 +82,6 @@ if (!function_exists('update_user_field')) {
     }
 }
 
-// Update user session data
 if (!function_exists('update_user_session')) {
     function update_user_session($key, $value) {
         if (is_logged_in() && isset($_SESSION["user"])) {
@@ -103,7 +90,6 @@ if (!function_exists('update_user_session')) {
     }
 }
 
-// Validate and update user profile
 if (!function_exists('validate_and_update_profile')) {
     function validate_and_update_profile($user_id, $new_username, $new_email, $current_password, $new_password) {
         global $db;
@@ -150,6 +136,22 @@ if (!function_exists('validate_and_update_profile')) {
         }
 
         return $errors;
+    }
+}
+
+if (!function_exists('logout')) {
+    function logout() {
+        session_unset(); // Remove all session variables
+        session_destroy(); // Destroy the session
+    }
+}
+
+if (!function_exists('se')) {
+    function se($array, $key, $default = "", $sanitize = true) {
+        if (isset($array[$key])) {
+            return $sanitize ? htmlspecialchars($array[$key]) : $array[$key];
+        }
+        return $default;
     }
 }
 ?>
