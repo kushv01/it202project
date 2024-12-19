@@ -6,6 +6,9 @@ if (!is_logged_in()) {
     header("Location: login.php");
     exit;
 }
+
+// Get success message if available
+$success_message = $_GET['success'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -85,6 +88,12 @@ if (!is_logged_in()) {
             font-size: 2rem;
         }
 
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
         .dashboard-links {
             display: flex;
             flex-wrap: wrap;
@@ -159,6 +168,15 @@ if (!is_logged_in()) {
 <!-- Dashboard Section -->
 <div class="dashboard">
     <h1>Dashboard</h1>
+
+    <?php if ($success_message) : ?>
+        <?php
+        // Mask account number in the success message
+        $success_message = preg_replace('/\b(\d{8})(\d{4})\b/', '********$2', $success_message);
+        ?>
+        <div class="success-message"><?php echo htmlspecialchars($success_message); ?></div>
+    <?php endif; ?>
+
     <div class="dashboard-links">
         <a href="create_account.php">Create Account</a>
         <a href="my_accounts.php">My Accounts</a>
