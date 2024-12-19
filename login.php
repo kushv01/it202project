@@ -1,5 +1,52 @@
 <?php
 require_once(__DIR__ . "/lib/user_helpers.php");
+require_once(__DIR__ . "/lib/db.php"); // Include the database connection
+
+session_start(); // Start the session
+
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $identifier = $_POST['identifier'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $hasError = false;
+
+    if (empty($identifier) || empty($password)) {
+        $error_message = "Both fields are required.";
+        $hasError = true;
+    }
+
+    if (!$hasError) {
+        $db = getDB();
+        $stmt = $db->prepare("
+            SELECT id, username, email, password 
+            FROM Users 
+            WHERE email = :identifier OR username = :identifier
+        ");
+        try {
+            $stmt->execute([':identifier' => $identifier]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                if (password_verify($password, $user['password'])) {
+                    // Set session variables
+                    $_SESSION['user'] = [
+                        'id' => $user['id'],
+                        'username' => $user['username'],
+                        'email' => $user['email']
+                    ];
+                    header("Location: home.php"); // Redirect to home page
+                    exit;
+                } else {
+                    $error_message = "Invalid password.";
+                }
+            } else {
+                $error_message = "No account found with that email or username.";
+            }
+        } catch (Exception $e) {
+            $error_message = "An error occurred: " . htmlspecialchars($e->getMessage());
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -121,6 +168,13 @@ require_once(__DIR__ . "/lib/user_helpers.php");
             background-color: #003366;
         }
 
+        /* Error message styling */
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
         /* Footer link */
         .login-container .footer-link {
             margin-top: 15px;
@@ -168,7 +222,11 @@ require_once(__DIR__ . "/lib/user_helpers.php");
     <h1>Welcome to VaultForge</h1>
     <p>Please log in to access your account.</p>
 
-    <form onsubmit="return validate(this)" method="POST">
+    <?php if (!empty($error_message)) : ?>
+        <div class="error-message"><?php echo htmlspecialchars($error_message); ?></div>
+    <?php endif; ?>
+
+    <form method="POST">
         <div class="form-group">
             <label for="identifier">Email or Username</label>
             <input type="text" id="identifier" name="identifier" required />
@@ -184,31 +242,6 @@ require_once(__DIR__ . "/lib/user_helpers.php");
         <p>Don't have an account? <a href="register.php">Register here</a></p>
     </div>
 </div>
-
-<script>
-    function validate(form) {
-        const identifier = form.identifier.value.trim();
-        const password = form.password.value.trim();
-
-        // Identifier (Email/Username) validation
-        if (!identifier) {
-            alert("Email or Username is required");
-            return false;
-        }
-
-        // Password validation
-        if (!password) {
-            alert("Password is required");
-            return false;
-        }
-        if (password.length < 8) {
-            alert("Password must be at least 8 characters");
-            return false;
-        }
-
-        return true; // All validations passed
-    }
-</script>
 
 </body>
 </html>
