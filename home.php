@@ -6,12 +6,19 @@ require_once(__DIR__ . "/lib/db.php"); // Include the DB connection logic
 $db = getDB(); // Initialize the database connection
 $user = null;
 
+// Check if the user is logged in
 if (is_logged_in()) {
     $user_id = get_user_id();
     $stmt = $db->prepare("SELECT username, email FROM Users WHERE id = :id");
     $stmt->execute(['id' => $user_id]);
     $user = $stmt->fetch();
 }
+
+// Fetch the world account balance
+$stmt = $db->prepare("SELECT balance FROM Accounts WHERE account_number = '000000000000' AND account_type = 'world'");
+$stmt->execute();
+$world_account = $stmt->fetch(PDO::FETCH_ASSOC);
+$world_balance = $world_account['balance'] ?? 0.00;
 ?>
 
 <!DOCTYPE html>
@@ -31,13 +38,16 @@ if (is_logged_in()) {
         /* Body styling */
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
+            background: linear-gradient(135deg, #004085, #00aaff);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Navbar styling */
         nav {
-            background-color: #004085; /* Brand color */
+            background-color: #003366; /* Slightly darker */
             color: #fff;
             display: flex;
             justify-content: space-between;
@@ -82,36 +92,60 @@ if (is_logged_in()) {
         }
 
         .hero h1 {
-            color: #004085;
             font-size: 2rem;
         }
 
         .hero p {
             margin: 15px 0;
             font-size: 1.2rem;
-            color: #555;
+            color: #ddd;
         }
 
-        /* Video section */
+        .info-section {
+            margin: 30px 0;
+        }
+
+        .info-section h2 {
+            margin-bottom: 15px;
+        }
+
+        /* World Balance Section */
+        .world-balance {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border: 1px solid #fff;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .world-balance h2 {
+            margin-bottom: 10px;
+        }
+
+        .world-balance p {
+            font-size: 1.2rem;
+        }
+
+        /* Video Section */
         .video-section {
             text-align: center;
             margin: 40px 0;
         }
 
-        .video-section iframe {
-            width: 100%;
-            max-width: 600px;
-            height: 350px;
-            border: none;
+        .video-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
         }
 
         /* Footer */
         footer {
-            background-color: #003366;
+            background-color: #002244;
             color: #fff;
             text-align: center;
             padding: 10px 0;
-            margin-top: 30px;
+            margin-top: auto;
         }
 
         /* Responsive Design */
@@ -151,8 +185,13 @@ if (is_logged_in()) {
         <h2>Please log in to access your account and manage your finances.</h2>
     <?php endif; ?>
 
+    <div class="world-balance">
+        <h2>World Account Balance</h2>
+        <p><strong>$<?php echo number_format($world_balance, 2); ?></strong></p>
+    </div>
+
     <div class="video-section">
-        <img src="/public/images/landing.gif"title="Banking Video"></img>
+        <img src="/public/images/landing.gif" alt="Banking Video">
     </div>
 
     <div class="info-section">
