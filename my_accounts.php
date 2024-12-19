@@ -34,7 +34,6 @@ $stmt = $db->prepare("
 ");
 $stmt->execute([":user_id" => $user_id]);
 $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
@@ -139,6 +138,22 @@ $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: #333;
         }
 
+        table .learn-more {
+            background-color: #004085;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        table .learn-more:hover {
+            background-color: #0056b3;
+        }
+
         /* Footer */
         footer {
             background-color: #002244;
@@ -182,6 +197,7 @@ $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Account Type</th>
                     <th>Last Modified</th>
                     <th>Balance ($)</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -191,6 +207,13 @@ $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?php echo ucfirst(htmlspecialchars($account['account_type'])); ?></td>
                         <td><?php echo htmlspecialchars($account['modified']); ?></td>
                         <td><?php echo number_format($account['balance'], 2); ?></td>
+                        <td>
+                            <a 
+                                class="learn-more" 
+                                href="transaction_history.php?account_number=<?php echo urlencode($account['account_number']); ?>">
+                                Learn More
+                            </a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
