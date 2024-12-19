@@ -12,6 +12,9 @@ if (is_logged_in()) {
     $stmt = $db->prepare("SELECT username, email FROM Users WHERE id = :id");
     $stmt->execute(['id' => $user_id]);
     $user = $stmt->fetch();
+} else {
+    header("Location: login.php"); // Redirect if not logged in
+    exit;
 }
 
 // Fetch the world account balance
@@ -162,6 +165,7 @@ $world_balance = $world_account['balance'] ?? 0.00;
 <nav>
     <div class="logo">VaultForge</div>
     <div class="nav-links">
+        <a href="dashboard.php">Dashboard</a> <!-- Added Dashboard Link -->
         <a href="profile.php">Profile</a>
         <a href="transactions.php">Transactions</a>
         <a href="accounts.php">Accounts</a>
