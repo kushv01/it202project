@@ -64,7 +64,7 @@ if (!function_exists('get_user_id')) {
 if (!function_exists('is_username_available')) {
     function is_username_available($username) {
         global $db;
-        $stmt = $db->prepare("SELECT COUNT(*) FROM users WHERE username = :username");
+        $stmt = $db->prepare("SELECT COUNT(*) FROM Users WHERE username = :username");
         $stmt->execute(['username' => $username]);
         return $stmt->fetchColumn() == 0;
     }
@@ -74,7 +74,7 @@ if (!function_exists('is_username_available')) {
 if (!function_exists('is_email_available')) {
     function is_email_available($email) {
         global $db;
-        $stmt = $db->prepare("SELECT COUNT(*) FROM users WHERE email = :email");
+        $stmt = $db->prepare("SELECT COUNT(*) FROM Users WHERE email = :email");
         $stmt->execute(['email' => $email]);
         return $stmt->fetchColumn() == 0;
     }
@@ -89,7 +89,7 @@ if (!function_exists('update_user_field')) {
             throw new Exception("Invalid field specified");
         }
 
-        $stmt = $db->prepare("UPDATE users SET $field = :value, modified = NOW() WHERE id = :id");
+        $stmt = $db->prepare("UPDATE Users SET $field = :value, modified = NOW() WHERE id = :id");
         $stmt->execute(['value' => $value, 'id' => $user_id]);
     }
 }
@@ -135,7 +135,7 @@ if (!function_exists('validate_and_update_profile')) {
 
         // Validate and update password
         if (!empty($current_password) && !empty($new_password)) {
-            $stmt = $db->prepare("SELECT password FROM users WHERE id = :id");
+            $stmt = $db->prepare("SELECT password FROM Users WHERE id = :id");
             $stmt->execute(['id' => $user_id]);
             $hashed_password = $stmt->fetchColumn();
 
