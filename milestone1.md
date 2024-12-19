@@ -1,6 +1,6 @@
 <table><tr><td> <em>Assignment: </em> IT202 Milestone1 Deliverable</td></tr>
 <tr><td> <em>Student: </em> Kushagra Verma (kv378)</td></tr>
-<tr><td> <em>Generated: </em> 12/1/2024 11:28:31 PM</td></tr>
+<tr><td> <em>Generated: </em> 12/18/2024 7:13:17 PM</td></tr>
 <tr><td> <em>Grading Link: </em> <a rel="noreferrer noopener" href="https://learn.ethereallab.app/homework/IT202-AR451-M2024/it202-milestone1-deliverable/grade/kv378" target="_blank">Grading</a></td></tr></table>
 <table><tr><td> <em>Instructions: </em> <ol><li>Checkout Milestone1 branch</li><li>Create a milestone1.md file in your Project folder</li><li>Git add/commit/push this empty file to Milestone1 (you'll need the link later)</li><li>Fill in the deliverable items<ol><li>For each feature, add a direct link (or links) to the expected file the implements the feature from Heroku Prod (I.e,&nbsp;<a href="https://mt85-prod.herokuapp.com/Project/register.php">https://mt85-prod.herokuapp.com/Project/register.php</a>)</li></ol></li><li>Ensure your images display correctly in the sample markdown at the bottom</li><ol><li>NOTE: You may want to try to capture as much checklist evidence in your screenshots as possible, you do not need individual screenshots and are recommended to combine things when possible. Also, some screenshots may be reused if applicable.</li></ol><li>Save the submission items</li><li>Copy/paste the markdown from the "Copy markdown to clipboard link" or via the download button</li><li>Paste the code into the milestone1.md file or overwrite the file</li><li>Git add/commit/push the md file to Milestone1</li><li>Double check the images load when viewing the markdown file (points will be lost for invalid/non-loading images)</li><li>Make a pull request from Milestone1 to dev and merge it (resolve any conflicts)<ol><li>Make sure everything looks ok on heroku dev</li></ol></li><li>Make a pull request from dev to prod (resolve any conflicts)<ol><li>Make sure everything looks ok on heroku prod</li></ol></li><li>Submit the direct link from github prod branch to the milestone1.md file (no other links will be accepted and will result in 0)</li></ol></td></tr></table>
 <table><tr><td> <em>Deliverable 1: </em> Feature: User will be able to register a new account </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707834-bf5a5b13-ec36-4597-9741-aa830c195be2.png"></td></tr>
@@ -65,7 +65,7 @@
 <tr><td> <em>Sub-Task 4: </em> Explain briefly how the process/code works</td></tr>
 <tr><td> <em>Response:</em> <p>(missing)</p><br></td></tr>
 </table></td></tr>
-<table><tr><td> <em>Deliverable 4: </em> Feature: Basic Security Rules Implemented / Basic Roles Implemented </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707795-a9c94a71-7871-4572-bfae-ad636f8f8474.png"></td></tr>
+<table><tr><td> <em>Deliverable 4: </em> Feature: Basic Security Rules Implemented / Basic Roles Implemented </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707834-bf5a5b13-ec36-4597-9741-aa830c195be2.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Add a screenshot showing the logged out user can't access a login-protected page (may be the same as similar request)</td></tr>
 <tr><td><table><tr><td>Missing Image</td></tr>
 <tr><td> <em>Caption:</em> (missing)</td></tr>
@@ -75,29 +75,31 @@
 <tr><td> <em>Caption:</em> (missing)</td></tr>
 </table></td></tr>
 <tr><td> <em>Sub-Task 3: </em> Add a screenshot of the Roles table with valid data</td></tr>
-<tr><td><table><tr><td>Missing Image</td></tr>
-<tr><td> <em>Caption:</em> (missing)</td></tr>
+<tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fkv378%2F2024-12-18T23.32.17Screenshot%202024-12-18%20at%206.30.52%20PM.png.webp?alt=media&token=28d7e162-d1a7-4eb6-9c43-b521e9d863ee"/></td></tr>
+<tr><td> <em>Caption:</em> <p>roles table<br></p>
+</td></tr>
 </table></td></tr>
 <tr><td> <em>Sub-Task 4: </em> Add a screenshot of the UserRoles table with valid data</td></tr>
-<tr><td><table><tr><td>Missing Image</td></tr>
-<tr><td> <em>Caption:</em> (missing)</td></tr>
+<tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fkv378%2F2024-12-18T23.37.48Screenshot%202024-12-18%20at%206.37.41%20PM.png.webp?alt=media&token=dfa4149e-ecb1-4b99-93ea-fd21b30c4d65"/></td></tr>
+<tr><td> <em>Caption:</em> <p>user role table<br></p>
+</td></tr>
 </table></td></tr>
 <tr><td> <em>Sub-Task 5: </em> Add the related pull request(s) for these features</td></tr>
 <tr><td>Not provided</td></tr>
 <tr><td> <em>Sub-Task 6: </em> Explain briefly how the process/code works for login-protected pages</td></tr>
-<tr><td> <em>Response:</em> <p>(missing)</p><br></td></tr>
+<tr><td> <em>Response:</em> <p>The code begins by starting a session using <code>session_start()</code>, ensuring that the user&#39;s<br>authentication status is maintained across different pages. The <code>is_logged_in()</code> function checks whether the<br>user is logged in, typically by verifying session data like a user ID<br>or token. If the user is not logged in, they are redirected to<br>the login page (<code>header("Location: login.php");</code>). Once logged in, the user’s ID is fetched<br>using <code>get_user_id()</code>, and their details, such as username and email, are retrieved from<br>the database to populate the profile update form. This ensures that only authenticated<br>users can access the page and view or update their profile.<br></p><br></td></tr>
 <tr><td> <em>Sub-Task 7: </em> Explain briefly how the process/code works for role-protected pages</td></tr>
-<tr><td> <em>Response:</em> <p>(missing)</p><br></td></tr>
+<tr><td> <em>Response:</em> <p>Role protection is implemented using the <code>has_role('Admin')</code> function, which checks if the logged-in<br>user has the appropriate role (in this case, &quot;Admin&quot;). If the user has<br>the &quot;Admin&quot; role, an <strong>Admin Dashboard</strong> section is displayed, providing administrative links to<br>manage users, view reports, and system logs. This ensures that only users with<br>the &quot;Admin&quot; role can access and perform sensitive actions like user management or<br>viewing system logs, keeping these functionalities restricted to authorized personnel. The use of<br>role-based checks helps to enforce different levels of access control within the application.<br></p><br></td></tr>
 </table></td></tr>
-<table><tr><td> <em>Deliverable 5: </em> Feature: Site should have basic styles/theme applied; everything should be styled </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707795-a9c94a71-7871-4572-bfae-ad636f8f8474.png"></td></tr>
+<table><tr><td> <em>Deliverable 5: </em> Feature: Site should have basic styles/theme applied; everything should be styled </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707834-bf5a5b13-ec36-4597-9741-aa830c195be2.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Add screenshots to show examples of your site's styles/theme</td></tr>
-<tr><td><table><tr><td>Missing Image</td></tr>
+<tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fkv378%2F2024-12-19T00.04.15Screenshot%202024-12-18%20at%207.04.11%20PM.png.webp?alt=media&token=b20d4b62-9549-4c8b-a9a2-eb651231aaff"/></td></tr>
 <tr><td> <em>Caption:</em> (missing)</td></tr>
 </table></td></tr>
 <tr><td> <em>Sub-Task 2: </em> Add the related pull request(s) for this feature</td></tr>
 <tr><td>Not provided</td></tr>
 <tr><td> <em>Sub-Task 3: </em> Briefly explain your CSS at a high level</td></tr>
-<tr><td> <em>Response:</em> <p>(missing)</p><br></td></tr>
+<tr><td> <em>Response:</em> <p>The CSS for the banking app is designed to create a clean, professional,<br>and user-friendly interface with a focus on trust and accessibility. It uses a<br>modern color palette, primarily blues, to convey security, while ensuring clear readability with<br>a sans-serif font. Forms and buttons are styled with padding, borders, and rounded<br>corners for a polished look, along with hover effects for interactivity. Success and<br>error messages are prominently displayed in green and red, respectively, to provide clear<br>feedback. The Admin Dashboard is styled consistently with the rest of the app,<br>with hoverable links for easy navigation. The responsive design ensures a seamless experience<br>across devices, adjusting the layout and form elements for smaller screens.</p><br></td></tr>
 </table></td></tr>
 <table><tr><td> <em>Deliverable 6: </em> Feature: Any output messages/errors should be "user friendly" </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707795-a9c94a71-7871-4572-bfae-ad636f8f8474.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Add screenshots of some examples of errors/messages</td></tr>
@@ -119,19 +121,23 @@
 <tr><td> <em>Sub-Task 3: </em> Explain briefly how the process/code works (view only)</td></tr>
 <tr><td> <em>Response:</em> <p>(missing)</p><br></td></tr>
 </table></td></tr>
-<table><tr><td> <em>Deliverable 8: </em> Feature: User will be able to edit their profile </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707795-a9c94a71-7871-4572-bfae-ad636f8f8474.png"></td></tr>
+<table><tr><td> <em>Deliverable 8: </em> Feature: User will be able to edit their profile </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707834-bf5a5b13-ec36-4597-9741-aa830c195be2.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Add screenshots of the User Profile page validation messages and success messages</td></tr>
-<tr><td><table><tr><td>Missing Image</td></tr>
+<tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fkv378%2F2024-12-19T00.08.42Screenshot%202024-12-18%20at%207.08.37%20PM.png.webp?alt=media&token=035ca052-78e0-4e5d-a48e-1899f025da2f"/></td></tr>
 <tr><td> <em>Caption:</em> (missing)</td></tr>
 </table></td></tr>
 <tr><td> <em>Sub-Task 2: </em> Add before and after screenshots of the Users table when a user edits their profile</td></tr>
-<tr><td><table><tr><td>Missing Image</td></tr>
-<tr><td> <em>Caption:</em> (missing)</td></tr>
+<tr><td><table><tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fkv378%2F2024-12-19T00.10.03Screenshot%202024-12-18%20at%207.09.56%20PM.png.webp?alt=media&token=342cda06-e23a-4f4e-8f55-0f0988abe675"/></td></tr>
+<tr><td> <em>Caption:</em> <p>the last data with id 6 has username kushuu<br></p>
+</td></tr>
+<tr><td><img width="768px" src="https://firebasestorage.googleapis.com/v0/b/learn-e1de9.appspot.com/o/assignments%2Fkv378%2F2024-12-19T00.11.15Screenshot%202024-12-18%20at%206.35.10%20PM.png.webp?alt=media&token=8412b118-3dbf-4f39-8958-6f99eaeabb29"/></td></tr>
+<tr><td> <em>Caption:</em> <p>that changed to kushu through update your profile<br></p>
+</td></tr>
 </table></td></tr>
 <tr><td> <em>Sub-Task 3: </em> Add the related pull request(s) for this feature</td></tr>
 <tr><td>Not provided</td></tr>
 <tr><td> <em>Sub-Task 4: </em> Explain briefly how the process/code works (edit only)</td></tr>
-<tr><td> <em>Response:</em> <p>(missing)</p><br></td></tr>
+<tr><td> <em>Response:</em> <p>The process starts by checking if the user is logged in using the<br><code>is_logged_in()</code> function. If the user is not logged in, they are redirected to<br>the login page. If the user is logged in, their user ID is<br>fetched, and their profile details (username and email) are retrieved from the database.<br>The user can then update their profile through a form submission. Upon submitting<br>the form, the entered data is validated and updated in the database through<br>the <code>validate_and_update_profile()</code> function. If there are no errors, a success message is displayed.<br>Additionally, if the user has an &quot;Admin&quot; role, the Admin Dashboard is shown<br>with links to manage users, view reports, and check system logs. The layout<br>and style are handled through CSS, which ensures a clean, user-friendly design and<br>responsive behavior across devices.<br></p><br></td></tr>
 </table></td></tr>
 <table><tr><td> <em>Deliverable 9: </em> Issues and Project Board </td></tr><tr><td><em>Status: </em> <img width="100" height="20" src="https://user-images.githubusercontent.com/54863474/211707795-a9c94a71-7871-4572-bfae-ad636f8f8474.png"></td></tr>
 <tr><td><table><tr><td> <em>Sub-Task 1: </em> Add screenshots showing which issues are done/closed (project board) Incomplete Issues should not be closed</td></tr>
