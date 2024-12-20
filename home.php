@@ -167,8 +167,6 @@ $world_balance = $world_account['balance'] ?? 0.00;
     <div class="nav-links">
         <a href="dashboard.php">Dashboard</a> <!-- Added Dashboard Link -->
         <a href="profile.php">Profile</a>
-        <a href="transactions.php">Transactions</a>
-        <a href="accounts.php">Accounts</a>
         <?php if (is_logged_in()) : ?>
             <a href="logout.php">Logout</a>
         <?php else : ?>
