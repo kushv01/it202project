@@ -88,13 +88,16 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         /* Body styling */
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
+            background: linear-gradient(135deg, #004085, #00aaff);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Navbar styling */
         nav {
-            background-color: #004085; /* Brand color */
+            background-color: #003366;
             color: #fff;
             display: flex;
             justify-content: space-between;
@@ -128,12 +131,13 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         /* Profile Form */
         .profile-container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 50px auto;
             padding: 20px;
             background-color: #fff;
+            color: #333;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .profile-container h1 {
@@ -148,7 +152,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         form .form-group {
             margin-bottom: 15px;
-            text-align: left;
         }
 
         form label {
@@ -195,6 +198,15 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
             font-weight: bold;
             margin-bottom: 15px;
         }
+
+        /* Footer */
+        footer {
+            background-color: #003366;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: auto;
+        }
     </style>
 </head>
 <body>
@@ -204,8 +216,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
     <div class="logo">VaultForge</div>
     <div class="nav-links">
         <a href="home.php">Home</a>
-        <a href="profile.php">Profile</a>
-        <a href="transactions.php">Transactions</a>
+        <a href="dashboard.php">Dashboard</a>
         <a href="logout.php">Logout</a>
     </div>
 </nav>
@@ -246,6 +257,11 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         <button type="submit">Update Profile</button>
     </form>
 </div>
+
+<!-- Footer -->
+<footer>
+    VaultForge - Banking Made Secure &copy; <?php echo date('Y'); ?>
+</footer>
 
 </body>
 </html>

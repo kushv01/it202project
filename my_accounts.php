@@ -10,23 +10,14 @@ if (!is_logged_in()) {
 
 $db = getDB();
 $user_id = get_user_id();
-$accounts = [];
 
-// Fetch the user's accounts (limit 5)
+// Fetch user's accounts with balances
 $stmt = $db->prepare("
     SELECT 
         account_number, 
         account_type, 
-        modified, 
-        (
-            SELECT IFNULL(SUM(balance_change), 0) 
-            FROM Transactions 
-            WHERE account_dest = Accounts.id
-        ) - (
-            SELECT IFNULL(SUM(balance_change), 0) 
-            FROM Transactions 
-            WHERE account_src = Accounts.id
-        ) AS balance
+        balance, 
+        modified 
     FROM Accounts
     WHERE user_id = :user_id
     ORDER BY modified DESC
@@ -43,14 +34,6 @@ $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Accounts - VaultForge</title>
     <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Body styling */
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #004085, #00aaff);
@@ -60,59 +43,43 @@ $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             flex-direction: column;
         }
 
-        /* Navbar styling */
-        nav {
+        nav, footer {
             background-color: #003366;
             color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
         }
 
-        nav .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            letter-spacing: 1px;
+        nav .nav-links, nav .logo {
+            display: flex;
+            align-items: center;
         }
 
         nav .nav-links {
-            display: flex;
-            gap: 20px;
+            justify-content: flex-end;
+            gap: 15px;
         }
 
-        nav .nav-links a {
-            color: #fff;
+        nav a {
             text-decoration: none;
-            font-size: 1rem;
+            color: #fff;
             padding: 8px 12px;
+            border-radius: 4px;
         }
 
-        nav .nav-links a:hover {
+        nav a:hover {
             background-color: #0056b3;
-            border-radius: 5px;
         }
 
-        /* Content Container */
         .container {
             max-width: 800px;
             margin: 20px auto;
-            background-color: #fff;
+            background: #fff;
             color: #333;
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .container h1 {
-            color: #004085;
-            margin-bottom: 20px;
-            font-size: 2rem;
-            text-align: center;
-        }
-
-        /* Table styling */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -120,7 +87,7 @@ $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         table th, table td {
-            padding: 12px;
+            padding: 10px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
@@ -138,43 +105,13 @@ $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: #333;
         }
 
-        table .learn-more {
-            background-color: #004085;
-            color: #fff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            text-align: center;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        table .learn-more:hover {
-            background-color: #0056b3;
-        }
-
-        /* Footer */
         footer {
-            background-color: #002244;
-            color: #fff;
             text-align: center;
-            padding: 10px 0;
-            margin-top: auto;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            nav .nav-links {
-                flex-direction: column;
-                gap: 10px;
-            }
         }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
 <nav>
     <div class="logo">VaultForge</div>
     <div class="nav-links">
@@ -185,18 +122,16 @@ $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </nav>
 
-<!-- Content Section -->
 <div class="container">
     <h1>My Accounts</h1>
-
     <?php if (count($accounts) > 0) : ?>
         <table>
             <thead>
                 <tr>
                     <th>Account Number</th>
                     <th>Account Type</th>
-                    <th>Last Modified</th>
                     <th>Balance ($)</th>
+                    <th>Last Modified</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -205,25 +140,20 @@ $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <tr>
                         <td><?php echo htmlspecialchars($account['account_number']); ?></td>
                         <td><?php echo ucfirst(htmlspecialchars($account['account_type'])); ?></td>
-                        <td><?php echo htmlspecialchars($account['modified']); ?></td>
                         <td><?php echo number_format($account['balance'], 2); ?></td>
+                        <td><?php echo htmlspecialchars($account['modified']); ?></td>
                         <td>
-                            <a 
-                                class="learn-more" 
-                                href="transaction_history.php?account_number=<?php echo urlencode($account['account_number']); ?>">
-                                Learn More
-                            </a>
+                            <a href="transaction_history.php?account_number=<?php echo urlencode($account['account_number']); ?>" style="color: #004085;">Learn More</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     <?php else : ?>
-        <p>No accounts found. <a href="create_account.php" style="color: #004085; text-decoration: underline;">Create an account</a> to get started.</p>
+        <p>No accounts found. <a href="create_account.php" style="color: #004085;">Create an account</a> to get started.</p>
     <?php endif; ?>
 </div>
 
-<!-- Footer -->
 <footer>
     VaultForge - Banking Made Secure &copy; <?php echo date('Y'); ?>
 </footer>
